@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>투두띵</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#12131c">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#12131c;--card:#1c1e2b;--ink:#e7e4ef;--sub:#8a88a0;--line:#2a2c3c;--pink:#7f6fbf;--pink-d:#5f51a0;--mint:#8fb8c9;--lav:#262438;--butter:#2a2633;--shadow:0 8px 20px -12px #000c}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{font-family:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 50% -20%,#2a2446 0%,transparent 60%),radial-gradient(#ffffff0f 1px,transparent 1.3px) 0 0/40px 40px,var(--bg);min-height:100vh;display:flex;justify-content:center}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{width:100%;max-width:440px;padding:calc(env(safe-area-inset-top,0px) + 22px) 18px calc(env(safe-area-inset-bottom,0px) + 160px)}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.sub{font-size:15px;color:var(--sub)}
+h1{font-size:34px;font-weight:400;letter-spacing:.5px}
+.mascot{font-size:40px;filter:drop-shadow(0 0 10px #b9a7e352);animation:glow 4s ease-in-out infinite}
+@keyframes glow{50%{filter:drop-shadow(0 0 3px #b9a7e326)}}
+.dayhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.arrow,.calh button{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:20px;box-shadow:0 3px 0 var(--line);display:grid;place-items:center}
+.dlabel{border:0;background:none;font-size:20px;padding:6px 10px;border-radius:14px}
+.prog-row{color:var(--sub);font-size:15px;margin-bottom:6px}
+.prog{height:14px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:16px}
+.prog i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--mint),#b9a7e3);transition:width .4s ease}
+.cheer{text-align:center;background:var(--butter);border-radius:18px;padding:10px;margin-bottom:14px;font-size:17px}
+.task{list-style:none;display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:12px 10px 12px 12px;margin-bottom:10px;box-shadow:0 10px 22px -14px #000c}
+.task.pop{animation:pop .35s cubic-bezier(.3,1.6,.6,1)}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+.check{position:relative;width:32px;height:32px;flex:none;border-radius:50%;border:2.5px solid var(--pink);background:var(--card);transition:background .2s,transform .15s}
+.check:active{transform:scale(.88)}
+.check::after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:17px;opacity:0;transition:opacity .2s}
+.task.done .check{background:var(--pink)}
+.task.done .check::after{opacity:1}
+.txt{flex:1;font-size:18px;line-height:1.35;word-break:break-word}
+.task.done .txt{color:var(--sub);text-decoration:line-through;text-decoration-color:var(--pink)}
+.tag{font-size:13px;background:var(--lav);border-radius:10px;padding:2px 7px;flex:none}
+.x{border:0;background:none;color:var(--sub);font-size:18px;padding:6px;flex:none}
+.empty{text-align:center;color:var(--sub);font-size:17px;padding:34px 10px;line-height:1.6}
+.empty b{display:block;font-size:48px;font-weight:400;margin-bottom:6px}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 14px);background:linear-gradient(rgba(18,19,28,0),var(--bg) 40%)}
+.composer{width:100%;max-width:412px;display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:28px;padding:6px 6px 6px 16px;box-shadow:var(--shadow)}
+.composer input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:17px;padding:8px 0}
+.composer input::placeholder{color:var(--sub)}
+#moon{border:0;border-radius:18px;padding:7px 10px;font-size:13px;background:var(--lav);opacity:.45;white-space:nowrap}
+#moon[aria-pressed=true]{opacity:1;box-shadow:inset 0 0 0 2px #b59cff}
+.add{width:44px;height:44px;flex:none;border:0;border-radius:50%;background:var(--pink);color:#fff;font-size:28px;line-height:1;box-shadow:0 4px 0 var(--pink-d)}
+.add:active{transform:translateY(2px);box-shadow:0 2px 0 var(--pink-d)}
+.nav{display:flex;gap:4px;background:var(--card);border:2px solid var(--line);border-radius:99px;padding:5px;box-shadow:var(--shadow)}
+.tab{border:0;background:none;font-size:16px;color:var(--sub);padding:9px 22px;border-radius:99px}
+.tab.on{background:#262838;color:var(--ink);box-shadow:inset 0 0 0 1px #3b3e55}
+.cal{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:14px;box-shadow:var(--shadow)}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.calh b{font-weight:400;font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dow{font-size:13px;color:var(--sub);padding:4px 0}
+.day{border:0;background:none;aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:16px}
+.day.today{background:var(--butter)}
+.day.sel{background:var(--pink);color:#fff}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--mint)}
+.day.sel .dot{background:#fff}
+.dot.none{background:transparent}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <p class="sub">새벽, 할 일 한 줄씩</p>
+      <h1>투두띵</h1>
+    </div>
+    <div class="mascot">🌙</div>
+  </header>
+
+  <section id="listView">
+    <div class="dayhead">
+      <button class="arrow" id="prev" aria-label="이전 날">‹</button>
+      <button class="dlabel" id="dateLabel"></button>
+      <button class="arrow" id="next" aria-label="다음 날">›</button>
+    </div>
+    <div class="prog-row"><span id="pinfo"></span></div>
+    <div class="prog"><i id="bar"></i></div>
+    <p class="cheer" id="cheer" hidden>오늘 할 일 끝. 이제 쉬어도 돼요 🌙</p>
+    <ul id="tasks"></ul>
+    <div class="empty" id="empty"><b>✦</b>조용한 새벽이에요<br>아래에 첫 할 일을 적어 볼까요?</div>
+  </section>
+
+  <section id="calView" hidden>
+    <div class="cal">
+      <div class="calh">
+        <button id="calPrev" aria-label="이전 달">‹</button>
+        <b id="calTitle"></b>
+        <button id="calNext" aria-label="다음 달">›</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+</div>
+
+<div class="dock">
+  <form class="composer" id="form" autocomplete="off">
+    <input id="input" placeholder="할 일을 적어 주세요" maxlength="60">
+    <button type="button" id="moon" aria-pressed="false" title="켜고 추가하면, 체크한 다음날 삭제돼요">🌙 내일 삭제</button>
+    <button class="add" aria-label="추가">+</button>
+  </form>
+  <nav class="nav">
+    <button class="tab on" data-view="list">✦ 할 일</button>
+    <button class="tab" data-view="cal">📅 달력</button>
+  </nav>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const KEY = 'tutting-v1';
+const DOW = ['일','월','화','수','목','금','토'];
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = () => ymd(new Date());
+
+let tasks = [];
+try { tasks = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+let selected = today(), view = 'list', calMonth = new Date(), autoDel = false, fresh = null;
+calMonth.setDate(1);
+
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(tasks)); } catch (e) {} };
+
+// 체크한 날 다음날부터 사라지는 할 일 정리
+function purge() {
+  const t = today(), n = tasks.length;
+  tasks = tasks.filter(x => !(x.autoDel && x.done && x.doneAt && x.doneAt < t));
+  if (tasks.length !== n) { save(); return true; }
+  return false;
+}
+
+function render() {
+  purge();
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.view === view));
+  $('#listView').hidden = view !== 'list';
+  $('#calView').hidden = view !== 'cal';
+  $('#form').hidden = view !== 'list';
+  view === 'list' ? renderList() : renderCal();
+}
+
+function renderList() {
+  const [y, m, d] = selected.split('-').map(Number);
+  $('#dateLabel').textContent = `${selected === today() ? '오늘 · ' : ''}${m}월 ${d}일 (${DOW[new Date(y, m-1, d).getDay()]})`;
+  const items = tasks.filter(t => t.date === selected).sort((a, b) => a.done - b.done);
+  const done = items.filter(t => t.done).length;
+  $('#pinfo').textContent = items.length ? `${done} / ${items.length} 완료` : '';
+  $('#bar').style.width = items.length ? (done / items.length * 100) + '%' : '0';
+  $('#cheer').hidden = !(items.length && done === items.length);
+  $('#empty').hidden = items.length > 0;
+
+  const ul = $('#tasks');
+  ul.innerHTML = '';
+  items.forEach(t => {
+    const li = document.createElement('li');
+    li.className = 'task' + (t.done ? ' done' : '') + (t.id === fresh ? ' pop' : '');
+    li.innerHTML = `<button class="check" aria-label="완료 체크"></button><span class="txt"></span>${t.autoDel ? '<span class="tag" title="체크하면 다음날 삭제">🌙</span>' : ''}<button class="x" aria-label="삭제">✕</button>`;
+    li.querySelector('.txt').textContent = t.text;
+    li.querySelector('.check').onclick = () => toggle(t.id);
+    li.querySelector('.x').onclick = () => remove(t.id);
+    ul.appendChild(li);
+  });
+  fresh = null;
+}
+
+function renderCal() {
+  const y = calMonth.getFullYear(), m = calMonth.getMonth(), t = today();
+  $('#calTitle').textContent = `${y}년 ${m+1}월`;
+  const g = $('#grid');
+  g.innerHTML = '';
+  DOW.forEach(w => g.insertAdjacentHTML('beforeend', `<div class="dow">${w}</div>`));
+  for (let i = 0; i < new Date(y, m, 1).getDay(); i++) g.insertAdjacentHTML('beforeend', '<div></div>');
+  const days = new Date(y, m + 1, 0).getDate();
+  for (let d = 1; d <= days; d++) {
+    const key = ymd(new Date(y, m, d));
+    const b = document.createElement('button');
+    b.className = 'day' + (key === t ? ' today' : '') + (key === selected ? ' sel' : '');
+    b.innerHTML = `<span>${d}</span><i class="dot${tasks.some(x => x.date === key) ? '' : ' none'}"></i>`;
+    b.onclick = () => { selected = key; view = 'list'; render(); };
+    g.appendChild(b);
+  }
+}
+
+function toggle(id) {
+  const x = tasks.find(v => v.id === id);
+  if (!x) return;
+  x.done = !x.done;
+  x.doneAt = x.done ? today() : null;
+  save();
+  if (navigator.vibrate) navigator.vibrate(8);
+  render();
+}
+
+function remove(id) {
+  tasks = tasks.filter(v => v.id !== id);
+  save();
+  render();
+}
+
+function shift(n) {
+  const [y, m, d] = selected.split('-').map(Number);
+  selected = ymd(new Date(y, m - 1, d + n));
+  render();
+}
+
+$('#form').onsubmit = e => {
+  e.preventDefault();
+  const input = $('#input'), text = input.value.trim();
+  if (!text) return;
+  fresh = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  tasks.push({ id: fresh, text, date: selected, done: false, doneAt: null, autoDel });
+  input.value = '';
+  save();
+  render();
+};
+$('#moon').onclick = () => {
+  autoDel = !autoDel;
+  $('#moon').setAttribute('aria-pressed', String(autoDel));
+};
+$('#prev').onclick = () => shift(-1);
+$('#next').onclick = () => shift(1);
+$('#dateLabel').onclick = () => { selected = today(); render(); };
+$('#calPrev').onclick = () => { calMonth.setMonth(calMonth.getMonth() - 1); renderCal(); };
+$('#calNext').onclick = () => { calMonth.setMonth(calMonth.getMonth() + 1); renderCal(); };
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  view = b.dataset.view;
+  if (view === 'cal') {
+    const [y, m] = selected.split('-').map(Number);
+    calMonth = new Date(y, m - 1, 1);
+  }
+  render();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+setInterval(() => { if (purge()) render(); }, 60000);
+
+render();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+</body>
+</html>
